@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ingress-nginx
+  namespace: flux-system
+spec:
+  releaseName: ingress-nginx
+  targetNamespace: ingress-nginx
+  install:
+    createNamespace: true
+  interval: 10m
+  timeout: 8m
+  chart:
+    spec:
+      chart: ingress-nginx
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+  values:
+    controller:
+      service:
+        type: LoadBalancer
+        annotations:
+          service.beta.kubernetes.io/aws-load-balancer-type: external
+          service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+          service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+          service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: http
+          service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: /healthz
+          service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: 10254

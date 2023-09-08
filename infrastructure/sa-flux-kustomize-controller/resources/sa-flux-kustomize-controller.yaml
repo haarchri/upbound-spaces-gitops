@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    meta.helm.sh/release-name: haarchri-spaces-01-lndwd-mtc44
+    meta.helm.sh/release-namespace: flux-system
+    eks.amazonaws.com/role-arn: ${irsa_flux_kustomize}
+  name: kustomize-controller
+  namespace: flux-system

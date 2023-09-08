@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: upbound-spaces
+  namespace: flux-system
+spec:
+  releaseName: spaces
+  targetNamespace: upbound-system
+  interval: 10m
+  timeout: 8m
+  chart:
+    spec:
+      chart: spaces
+      version: ${spaces_version}
+      sourceRef:
+        kind: HelmRepository
+        name: upbound-spaces
+        namespace: flux-system
+  values:
+    ingress:
+      host: ${spaces_dns_host}
+    clusterType: eks
+    account: ${spaces_upbound_account}

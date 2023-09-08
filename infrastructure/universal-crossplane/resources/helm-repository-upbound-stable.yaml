@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: upbound-stable
+  namespace: flux-system
+spec:
+  url: https://charts.upbound.io/stable
+  interval: 5m

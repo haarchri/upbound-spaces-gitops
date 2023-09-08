@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: aws-load-balancer-controller
+  namespace: flux-system
+spec:
+  releaseName: aws-load-balancer-controller
+  targetNamespace: kube-system
+  interval: 10m
+  timeout: 8m
+  chart:
+    spec:
+      chart: aws-load-balancer-controller
+      sourceRef:
+        kind: HelmRepository
+        name: eks-charts
+        namespace: flux-system
+  values:
+    clusterName: ${cluster_name}
+    serviceAccount:
+      name: aws-load-balancer-controller
+      annotations:
+        eks.amazonaws.com/role-arn: ${irsa_aws_load_balancer}

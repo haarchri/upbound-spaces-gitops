@@ -1,0 +1,46 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: external-dns
+  namespace: flux-system
+spec:
+  interval: 5m
+  releaseName: external-dns
+  targetNamespace: external-dns
+  install:
+    createNamespace: true
+  timeout: 3m
+  chart:
+    spec:
+      chart: external-dns
+      version: ${external_dns_version}
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    replicaCount: 1
+    provider: aws
+    domainFilters: ["${dns_route53}"]
+    policy: sync
+    source: ingress
+    registry: txt
+    txtOwnerId: external-dns
+    aws:
+      batchChangeSize: 2
+      zoneType: public
+      region: ${cluster_region}
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
+      name: external-dns
+      annotations:
+        eks.amazonaws.com/role-arn: ${irsa_external_dns}
+    metrics:
+      enabled: false
+      serviceMonitor:
+        enabled: false
+    replicas: 2
+    podDisruptionBudget:
+      minAvailable: 1
